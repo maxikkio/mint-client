@@ -1,0 +1,44 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            output_name: mint-client-windows.exe
+          - os: ubuntu-latest
+            output_name: mint-client-linux
+
+    steps:
+    - name: Pobierz kod źródłowy
+      uses: actions/checkout@v4
+
+    - name: Konfiguracja Pythona
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Instalacja zależności
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller requests
+
+    - name: Kompilacja przez PyInstaller
+      run: |
+        pyinstaller --noconsole --onefile client.py -n ${{ matrix.output_name }}
+
+    - name: Wrzuć plik do GitHub Releases
+      uses: softprops/action-gh-release@v2
+      with:
+        files: dist/${{ matrix.output_name }}
