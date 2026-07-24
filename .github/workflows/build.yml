@@ -68,11 +68,19 @@ jobs:
 
     - name: Create Buildozer spec
       run: |
-        if [ ! -f buildozer.spec ]; then
-          yes | buildozer init
-        fi
-        sed -i 's/# (str) Source file name (without extension)/source.file = main/' buildozer.spec
-        sed -i 's/# (list) Source files (relative to directory)/source.include_exts = py,png,jpg,kv,atlas/' buildozer.spec
+        cat << 'EOF' > buildozer.spec
+        [app]
+        title = Mint Client
+        package.name = mintclient
+        package.domain = org.mint
+        source.file = main
+        source.include_exts = py,png,jpg,kv,atlas
+        version = 1.0.1
+        requirements = python3,kivy,requests
+        orientation = portrait
+        fullscreen = 0
+        android.permissions = INTERNET
+        EOF
 
     - name: Build with Buildozer
       run: |
