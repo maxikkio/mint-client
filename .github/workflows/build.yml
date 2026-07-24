@@ -66,6 +66,14 @@ jobs:
         pip install --upgrade pip
         pip install Cython==0.30.10 buildozer
 
+    - name: Create Buildozer spec
+      run: |
+        if [ ! -f buildozer.spec ]; then
+          yes | buildozer init
+        fi
+        sed -i 's/# (str) Source file name (without extension)/source.file = main/' buildozer.spec
+        sed -i 's/# (list) Source files (relative to directory)/source.include_exts = py,png,jpg,kv,atlas/' buildozer.spec
+
     - name: Build with Buildozer
       run: |
         buildozer -v android debug
