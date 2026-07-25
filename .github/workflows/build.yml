@@ -82,6 +82,7 @@ jobs:
         fullscreen = 0
         android.permissions = INTERNET
         android.ndk = 25b
+        icon.filename = %(source.dir)s/icon.png
         EOF
 
     - name: Build with Buildozer
@@ -89,7 +90,7 @@ jobs:
         yes | buildozer -v android debug
 
     - name: Upload APK to Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         files: bin/*.apk
       env:
